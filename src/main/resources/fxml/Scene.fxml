@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
@@ -7,19 +8,73 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="480.0" prefWidth="640.0" style="-fx-background-color: #303030;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bconomy.autobit.FXMLController">
+<AnchorPane id="AnchorPane" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bconomy.autobit.FXMLController">
     <children>
-        <Button fx:id="btnStart" defaultButton="true" layoutX="577.0" layoutY="444.0" onAction="#onBtnStart" text="START" />
-      <Label layoutX="10.0" layoutY="-4.0" text="AutoBit" textFill="#d9d9d9">
-         <font>
-            <Font name="Euphemia" size="38.0" />
-         </font>
-      </Label>
-      <TextArea fx:id="statusBox" editable="false" layoutX="7.0" layoutY="51.0" prefHeight="369.0" prefWidth="626.0" promptText="status" wrapText="true">
-         <font>
-            <Font size="12.0" />
-         </font>
-      </TextArea>
-      <Button fx:id="btnStop" cancelButton="true" layoutX="510.0" layoutY="444.0" onAction="#onBtnStop" text="STOP" />
+      <TabPane prefHeight="480.0" prefWidth="640.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <tabs>
+          <Tab text="MAIN">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <TextArea fx:id="statusBox" editable="false" promptText="status" wrapText="true" VBox.vgrow="ALWAYS">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </TextArea>
+                              <HBox>
+                                 <children>
+                                    <Pane HBox.hgrow="ALWAYS" />
+                                    <Button fx:id="btnStop" cancelButton="true" onAction="#onBtnStop" text="STOP" />
+                                    <Pane prefWidth="10.0" />
+                                      <Button fx:id="btnStart" defaultButton="true" onAction="#onBtnStart" text="START" />
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                                 <padding>
+                                    <Insets top="8.0" />
+                                 </padding>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
+                     <padding>
+                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                     </padding>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="SETTINGS">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <Label text="Coinbase">
+                                 <font>
+                                    <Font name="Trebuchet MS Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label text="Blockchain.info">
+                                 <font>
+                                    <Font name="Trebuchet MS Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
+                     </children>
+                     <padding>
+                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                     </padding>
+                  </AnchorPane>
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
     </children>
 </AnchorPane>
