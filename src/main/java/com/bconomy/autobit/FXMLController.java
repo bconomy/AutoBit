@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,6 +20,8 @@ import javafx.scene.control.TextArea;
 
 public class FXMLController implements Initializable {
 	public static FXMLController instance;
+	private static final DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS ");
+	//df.format(new Date())
 
 	public RunThread runThread;
 	public class RunThread extends Thread {
@@ -53,6 +58,7 @@ public class FXMLController implements Initializable {
 	@FXML
 	private void onBtnStop(ActionEvent event) {
 		System.out.println("******** Stop");
+		
 		if (runThread != null) {
 			runThread.stop = true;
 		}
