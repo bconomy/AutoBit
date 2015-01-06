@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="480.0" prefWidth="640.0" style="-fx-background-color: #303030;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bconomy.autobit.FXMLController">
+    <children>
+        <Button fx:id="btnStart" defaultButton="true" layoutX="577.0" layoutY="444.0" onAction="#onBtnStart" text="START" />
+      <Label layoutX="10.0" layoutY="-4.0" text="AutoBit" textFill="#d9d9d9">
+         <font>
+            <Font name="Euphemia" size="38.0" />
+         </font>
+      </Label>
+      <TextArea fx:id="statusBox" editable="false" layoutX="7.0" layoutY="51.0" prefHeight="369.0" prefWidth="626.0" promptText="status" wrapText="true">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </TextArea>
+      <Button fx:id="btnStop" cancelButton="true" layoutX="510.0" layoutY="444.0" onAction="#onBtnStop" text="STOP" />
+    </children>
+</AnchorPane>
