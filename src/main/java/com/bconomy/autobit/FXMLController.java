@@ -5,6 +5,8 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,7 +16,28 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 
 public class FXMLController implements Initializable {
+	public static FXMLController instance;
 
+	public RunThread runThread;
+	public class RunThread extends Thread {
+		public Boolean stop = false;
+		@Override
+		public void run() {
+			while (true) {
+				try {
+					if (stop) break;
+					
+					System.out.println("Thread Running " + Math.random());
+					Thread.sleep(1000);
+				} catch (InterruptedException ex) {
+				} finally {
+				}
+			}
+		}
+	}
+	
+	
+	//*******************GUI
 	@FXML
 	private TextArea statusBox;
 	private Button btnStart;
@@ -22,20 +45,35 @@ public class FXMLController implements Initializable {
 
 	@FXML
 	private void onBtnStart(ActionEvent event) {
-		System.out.println("You clicked Start!");
+		System.out.println("******** Start");
+		
+		runThread = new RunThread();
+		runThread.start();
 	}
-
 	@FXML
 	private void onBtnStop(ActionEvent event) {
-		System.out.println("You clicked Stop!");
+		System.out.println("******** Stop");
+		if (runThread != null) {
+			runThread.stop = true;
+		}
 	}
 
+	
+	//*******************Main
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
+		instance = this;
 		redirectSystemStreams(statusBox);
+	}
+    public void close() {
+		if (runThread != null) {
+			runThread.stop = true;
+			runThread.interrupt();
+		}
 	}
 	
 	
+	//*******************Util
 	//redirect System.out to a textbox
 	private static void updateTextArea(final TextArea ta, final String text) {
 		Platform.runLater(new Runnable() {

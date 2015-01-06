@@ -2,10 +2,12 @@ package com.bconomy.autobit;
 
 import javafx.application.Application;
 import static javafx.application.Application.launch;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 
 public class MainApp extends Application {
@@ -19,9 +21,17 @@ public class MainApp extends Application {
         
         stage.setTitle("AutoBit");
         stage.setScene(scene);
+		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			@Override public void handle(WindowEvent e) { onClose(e); }
+		});
         stage.show();
     }
-
+	public void onClose(WindowEvent e) {
+		if (FXMLController.instance != null) {
+			FXMLController.instance.close();
+		}
+	}
+	
     /**
      * The main() method is ignored in correctly deployed JavaFX application.
      * main() serves only as fallback in case the application can not be
