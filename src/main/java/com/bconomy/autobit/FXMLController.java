@@ -1,22 +1,42 @@
+/* 
+ * Copyright (C) 2015 BownCo
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.bconomy.autobit;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.URL;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.EncryptedPreferences.EncryptedPreferences;
+import java.util.prefs.Preferences;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
 
 public class FXMLController implements Initializable {
 	public static FXMLController instance;
@@ -70,6 +90,26 @@ public class FXMLController implements Initializable {
 	public void initialize(URL url, ResourceBundle rb) {
 		instance = this;
 		redirectSystemStreams(statusBox);
+			
+			
+		try {
+			byte rawKey[] = {0x00,0x01};
+			DESKeySpec dks = new DESKeySpec(rawKey);
+			SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+			SecretKey secretKey = keyFactory.generateSecret(dks);
+			
+			Preferences root = EncryptedPreferences.userNodeForPackage(this.getClass(), secretKey);
+			
+			root.put("transparent", "encryption");
+			
+			Preferences subnode = root.node("subnode");
+			subnode.put("also", "encrypted");
+			
+			root.exportSubtree(System.out);
+		} catch (InvalidKeyException | NoSuchAlgorithmException | InvalidKeySpecException | IOException | BackingStoreException ex) {
+			ex.printStackTrace();
+		}
+		
 	}
     public void close() {
 		if (runThread != null) {

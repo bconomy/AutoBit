@@ -12,11 +12,12 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mainClass>com.bconomy.autobit.MainApp</mainClass>
+        <netbeans.hint.license>gpl30</netbeans.hint.license>
     </properties>
 
     <organization>
         <!-- Used as the 'Vendor' for JNLP generation -->
-        <name>bconomy</name>
+        <name>BownCo</name>
     </organization>
 
     <build>
