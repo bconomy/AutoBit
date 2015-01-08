@@ -26,7 +26,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ResourceBundle;
 import java.util.prefs.BackingStoreException;
-import java.util.prefs.EncryptedPreferences.EncryptedPreferences;
 import java.util.prefs.Preferences;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -91,24 +90,6 @@ public class FXMLController implements Initializable {
 		instance = this;
 		redirectSystemStreams(statusBox);
 			
-			
-		try {
-			byte rawKey[] = {0x00,0x01};
-			DESKeySpec dks = new DESKeySpec(rawKey);
-			SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
-			SecretKey secretKey = keyFactory.generateSecret(dks);
-			
-			Preferences root = EncryptedPreferences.userNodeForPackage(this.getClass(), secretKey);
-			
-			root.put("transparent", "encryption");
-			
-			Preferences subnode = root.node("subnode");
-			subnode.put("also", "encrypted");
-			
-			root.exportSubtree(System.out);
-		} catch (InvalidKeyException | NoSuchAlgorithmException | InvalidKeySpecException | IOException | BackingStoreException ex) {
-			ex.printStackTrace();
-		}
 		
 	}
     public void close() {
