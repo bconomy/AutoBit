@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!--
 Copyright (C) 2015 BownCo
 
@@ -15,6 +16,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
+<?import javafx.embed.swing.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
 <?import java.lang.*?>
@@ -33,7 +36,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                      <children>
                         <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <TextArea fx:id="statusBox" editable="false" promptText="status" wrapText="true" VBox.vgrow="ALWAYS">
+                              <TextArea fx:id="fxStatusBox" editable="false" promptText="status" wrapText="true" VBox.vgrow="ALWAYS">
                                  <font>
                                     <Font size="12.0" />
                                  </font>
@@ -44,9 +47,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                               <HBox>
                                  <children>
                                     <Pane HBox.hgrow="ALWAYS" />
-                                    <Button fx:id="btnStop" cancelButton="true" onAction="#onBtnStop" text="STOP" />
+                                    <Button cancelButton="true" onAction="#onButtonStop" text="STOP" />
                                     <Pane prefWidth="10.0" />
-                                      <Button fx:id="btnStart" defaultButton="true" onAction="#onBtnStart" text="START" />
+                                      <Button defaultButton="true" onAction="#onButtonStart" text="START" />
                                  </children>
                                  <VBox.margin>
                                     <Insets />
@@ -64,22 +67,80 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                   </AnchorPane>
             </content>
           </Tab>
-          <Tab text="SETTINGS">
+          <Tab onSelectionChanged="#onTabSettingsSelected" text="SETTINGS">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
                         <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <Label text="Coinbase">
-                                 <font>
-                                    <Font name="Trebuchet MS Bold" size="14.0" />
-                                 </font>
-                              </Label>
+                              <HBox alignment="BASELINE_LEFT">
+                                 <children>
+                                    <Label text="Coinbase">
+                                       <font>
+                                          <Font name="Trebuchet MS Bold" size="14.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets bottom="4.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                    <Hyperlink onAction="#onHyperlinkCBGetAPIKey" text="Get an API key">
+                                       <padding>
+                                          <Insets left="10.0" />
+                                       </padding>
+                                    </Hyperlink>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </HBox>
+                              <HBox alignment="BASELINE_LEFT">
+                                 <children>
+                                    <TextField fx:id="fxTextFieldCBAPIKey" prefHeight="22.0" prefWidth="231.0">
+                                       <HBox.margin>
+                                          <Insets bottom="4.0" />
+                                       </HBox.margin>
+                                    </TextField>
+                                    <Label text="API Key">
+                                       <HBox.margin>
+                                          <Insets left="10.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="BASELINE_LEFT">
+                                 <children>
+                                    <PasswordField fx:id="fxPasswordFieldCBAPISecret" prefHeight="22.0" prefWidth="231.0">
+                                       <HBox.margin>
+                                          <Insets bottom="4.0" />
+                                       </HBox.margin>
+                                    </PasswordField>
+                                    <Label text="API Secret">
+                                       <HBox.margin>
+                                          <Insets left="10.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                 </children>
+                              </HBox>
+                              <Pane prefHeight="200.0" prefWidth="200.0" />
                               <Label text="Blockchain.info">
                                  <font>
                                     <Font name="Trebuchet MS Bold" size="14.0" />
                                  </font>
+                                 <VBox.margin>
+                                    <Insets bottom="4.0" />
+                                 </VBox.margin>
                               </Label>
+                              <HBox alignment="BASELINE_LEFT">
+                                 <children>
+                                    <TextField fx:id="fxTextFieldBCWallet" prefHeight="22.0" prefWidth="231.0" promptText="1EjmmDULiZT2GCbJSeXRbjbJVvAPYkSDBw" />
+                                    <Label text="Main Wallet Address">
+                                       <HBox.margin>
+                                          <Insets left="10.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                 </children>
+                              </HBox>
+                              <Pane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
                            </children>
                         </VBox>
                      </children>

@@ -126,5 +126,10 @@
             <artifactId>coinbase-java</artifactId>
             <version>1.9.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.json</artifactId>
+            <version>1.0.4</version>
+        </dependency>
     </dependencies>
 </project>

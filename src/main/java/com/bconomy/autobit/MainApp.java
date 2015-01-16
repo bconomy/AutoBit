@@ -42,9 +42,7 @@ public class MainApp extends Application {
         stage.show();
     }
 	public void onClose(WindowEvent e) {
-		if (FXMLController.instance != null) {
-			FXMLController.instance.close();
-		}
+		if (FXMLController.instance != null) FXMLController.instance.close();
 	}
 	
     /**

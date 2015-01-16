@@ -25,8 +25,9 @@ import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -37,9 +38,6 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
@@ -136,26 +134,30 @@ public class FXMLController implements Initializable {
 		instance = this;
 		redirectSystemStreams(fxStatusBox);
 		
+		//settings encryption
+		//TODO make this more secure, possibly store in java.util.prefs.Preferences
+		byte[] keyLocal = {(byte)0x12, (byte)0xa8, (byte)0xd9, (byte)0x83, (byte)0x4c, (byte)0x67, (byte)0x23, (byte)0x82, 
+						(byte)0x87, (byte)0x04, (byte)0xd4, (byte)0x7a, (byte)0x11, (byte)0x83, (byte)0xee, (byte)0x3b};
+		Path keyFile = Paths.get(System.getProperty("user.home"), ".AutoBitKey");
+		boolean keyFileRead = false;
+		try {
+			Encryption.key = Encryption.decrypt(Files.readAllBytes(keyFile), keyLocal);
+			if (Encryption.key.length == 16) keyFileRead = true;
+		} catch (IOException ex) { }
+		if (!keyFileRead) {
+			Encryption.makeRandomKey();
+			try {
+				//Files.createDirectories(keyFile.getParent());
+				Files.write(keyFile, Encryption.encrypt(Encryption.key, keyLocal));
+				Object hidden = Files.getAttribute(keyFile, "dos:hidden");
+				if (hidden != null && !(Boolean)hidden) Files.setAttribute(keyFile, "dos:hidden", true);
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
 		
-		//settings
-//		Preferences root = Preferences.userRoot();
-//		//Preferences root = Preferences.userRoot().node("/com/coremake/advertising");
-//		//Preferences root = Preferences.userNodeForPackage(this.getClass());
-//		System.out.println(root.absolutePath());
-		
-//		Encryption.key = root.getByteArray("item", null);
-//		if (Encryption.key == null) {
-//			Encryption.makeKey();
-//			root.putByteArray("item", Encryption.key);
-//		}
-//		try {
-//			root.flush();
-//		} catch (BackingStoreException ex) {
-//			ex.printStackTrace();
-//		}
-		
-//		if (!settingsFile.exists()) settingsFile.getParentFile().mkdirs();
-//		else loadSettings();
+		if (!settingsFile.exists()) settingsFile.getParentFile().mkdirs();
+		else loadSettings();
 	}
     public void close() {
 		if (runThread != null) {
@@ -166,16 +168,17 @@ public class FXMLController implements Initializable {
 	}
 	
 	
-	//*******************Util
+	//*******************Utilities
 	private final static File settingsFile = new File(System.getProperty("user.home"), "AutoBitSettings.json");
     private void saveSettings() {
 		try (FileOutputStream fs = new FileOutputStream(settingsFile); JsonWriter json = Json.createWriter(fs);) {
 			JsonObjectBuilder builder = Json.createObjectBuilder()
 				.add("BCWallet", fxTextFieldBCWallet.getText())
+				.add("CBAPIKey", Encryption.encrypt(fxTextFieldCBAPIKey.getText()))
 				.add("CBAPISecret", Encryption.encrypt(fxPasswordFieldCBAPISecret.getText()))
 			;
 			json.writeObject(builder.build());
-		} catch (IOException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
+		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
     }
@@ -184,8 +187,9 @@ public class FXMLController implements Initializable {
 		try (FileInputStream fs = new FileInputStream(settingsFile); JsonReader json = Json.createReader(fs);) {
 			JsonObject model = json.readObject();
 			if (model.containsKey("BCWallet")) fxTextFieldBCWallet.setText(model.getString("BCWallet", ""));
+			if (model.containsKey("CBAPIKey")) fxTextFieldCBAPIKey.setText(Encryption.decrypt(model.getString("CBAPIKey", "")));
 			if (model.containsKey("CBAPISecret")) fxPasswordFieldCBAPISecret.setText(Encryption.decrypt(model.getString("CBAPISecret", "")));
-		} catch (IOException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
+		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
 	}
