@@ -101,7 +101,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                               </HBox>
                               <HBox alignment="BASELINE_LEFT" layoutX="10.0" layoutY="128.0">
                                  <children>
-                                    <TextField fx:id="fxTextFieldPercentMarkup" alignment="CENTER_RIGHT" prefHeight="22.0" prefWidth="43.0" promptText="10">
+                                    <TextField fx:id="fxTextFieldPercentMarkup" alignment="CENTER_RIGHT" prefHeight="22.0" prefWidth="63.0" promptText="10">
                                        <HBox.margin>
                                           <Insets bottom="4.0" right="4.0" />
                                        </HBox.margin>
@@ -111,22 +111,35 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                           <Insets right="20.0" />
                                        </HBox.margin>
                                     </Label>
-                                    <TextField fx:id="fxTextFieldUSDMaxDaily" alignment="CENTER_RIGHT" layoutX="10.0" layoutY="10.0" prefHeight="22.0" prefWidth="43.0" promptText="300">
+                                    <TextField fx:id="fxTextFieldUSDMaxDaily" alignment="CENTER_RIGHT" layoutX="10.0" layoutY="10.0" prefHeight="22.0" prefWidth="63.0" promptText="300">
                                        <HBox.margin>
                                           <Insets bottom="4.0" right="4.0" />
                                        </HBox.margin>
                                     </TextField>
-                                    <Label layoutX="57.0" layoutY="14.0" text="\$ Max Sold per Day" />
+                                    <Label layoutX="57.0" layoutY="14.0" text="\$ Topup Target">
+                                       <HBox.margin>
+                                          <Insets right="20.0" />
+                                       </HBox.margin></Label>
+                                    <TextField fx:id="fxTextFieldTopupFreqMin" alignment="CENTER_RIGHT" layoutX="146.0" layoutY="10.0" prefHeight="22.0" prefWidth="63.0" promptText="1440">
+                                       <HBox.margin>
+                                          <Insets bottom="4.0" right="4.0" />
+                                       </HBox.margin>
+                                    </TextField>
+                                    <Label layoutX="193.0" layoutY="14.0" text="(minutes) Topup Frequency">
+                                       <HBox.margin>
+                                          <Insets right="20.0" />
+                                       </HBox.margin>
+                                    </Label>
                                  </children>
                               </HBox>
                               <HBox alignment="BASELINE_LEFT" layoutX="10.0" layoutY="294.0">
                                  <children>
-                                    <TextField fx:id="fxTextFieldProfitWallet" prefHeight="22.0" prefWidth="240.0" promptText="1JzSZFs2DQke2B3S4pBxaNaMzzVZaG4Cqh">
+                                    <TextField fx:id="fxTextFieldProfitWallet" prefHeight="22.0" prefWidth="260.0" promptText="1JzSZFs2DQke2B3S4pBxaNaMzzVZaG4Cqh">
                                        <HBox.margin>
-                                          <Insets bottom="4.0" />
+                                          <Insets bottom="4.0" right="10.0" />
                                        </HBox.margin>
                                     </TextField>
-                                    <Label text="Profit Wallet Address">
+                                    <Label text="Profit Public Address">
                                        <HBox.margin>
                                           <Insets />
                                        </HBox.margin>
@@ -156,7 +169,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                               </HBox>
                               <HBox alignment="BASELINE_LEFT" layoutX="10.0" layoutY="134.0">
                                  <children>
-                                    <TextField fx:id="fxTextFieldCBAcctId" prefHeight="22.0" prefWidth="240.0">
+                                    <TextField fx:id="fxTextFieldCBAcctId" prefHeight="22.0" prefWidth="260.0">
                                        <HBox.margin>
                                           <Insets bottom="4.0" right="10.0" />
                                        </HBox.margin>
@@ -170,7 +183,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                               </HBox>
                               <HBox alignment="BASELINE_LEFT">
                                  <children>
-                                    <TextField fx:id="fxTextFieldCBAPIKey" prefHeight="22.0" prefWidth="240.0">
+                                    <TextField fx:id="fxTextFieldCBAPIKey" prefHeight="22.0" prefWidth="260.0">
                                        <HBox.margin>
                                           <Insets bottom="4.0" right="10.0" />
                                        </HBox.margin>
@@ -184,7 +197,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                               </HBox>
                               <HBox alignment="BASELINE_LEFT">
                                  <children>
-                                    <PasswordField fx:id="fxPasswordFieldCBAPISecret" prefHeight="22.0" prefWidth="240.0">
+                                    <PasswordField fx:id="fxPasswordFieldCBAPISecret" prefHeight="22.0" prefWidth="260.0">
                                        <HBox.margin>
                                           <Insets bottom="4.0" right="10.0" />
                                        </HBox.margin>
@@ -207,12 +220,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                               </Label>
                               <HBox alignment="BASELINE_LEFT" layoutX="10.0" layoutY="235.0">
                                  <children>
-                                    <TextField fx:id="fxTextFieldBCWallet" prefHeight="22.0" prefWidth="240.0" promptText="1JzSZFs2DQke2B3S4pBxaNaMzzVZaG4Cqh">
+                                    <TextField fx:id="fxTextFieldBCWallet" prefHeight="22.0" prefWidth="260.0" promptText="1JzSZFs2DQke2B3S4pBxaNaMzzVZaG4Cqh">
                                        <HBox.margin>
                                           <Insets bottom="4.0" right="10.0" />
                                        </HBox.margin>
                                     </TextField>
-                                    <Label text="Main Wallet Address">
+                                    <Label text="Main Public Address">
                                        <HBox.margin>
                                           <Insets />
                                        </HBox.margin>
@@ -221,11 +234,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                               </HBox>
                               <HBox alignment="BASELINE_LEFT">
                                  <children>
-                                    <TextField fx:id="fxTextFieldBCWalletIdent" prefHeight="22.0" prefWidth="240.0" promptText="18d4cf81-fcec-4a94-aa93-202a25085c0e">
+                                    <TextField fx:id="fxTextFieldBCWalletIdent" disable="true" prefHeight="22.0" prefWidth="260.0" promptText="18d4cf81-fcec-4a94-aa93-202a25085c0e">
                                        <HBox.margin>
                                           <Insets bottom="4.0" right="10.0" />
                                        </HBox.margin></TextField>
-                                    <Label text="Wallet Identifier">
+                                    <Label disable="true" text="Wallet Identifier">
                                        <HBox.margin>
                                           <Insets />
                                        </HBox.margin>
@@ -234,12 +247,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                               </HBox>
                               <HBox alignment="BASELINE_LEFT" layoutX="10.0" layoutY="263.0">
                                  <children>
-                                    <PasswordField fx:id="fxPasswordFieldBCWalletPass" prefHeight="22.0" prefWidth="240.0">
+                                    <PasswordField fx:id="fxPasswordFieldBCWalletPass" disable="true" prefHeight="22.0" prefWidth="260.0">
                                        <HBox.margin>
                                           <Insets bottom="4.0" right="10.0" />
                                        </HBox.margin>
                                     </PasswordField>
-                                    <Label text="Wallet Password">
+                                    <Label disable="true" text="Wallet Password">
                                        <HBox.margin>
                                           <Insets />
                                        </HBox.margin>
@@ -248,12 +261,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                               </HBox>
                               <HBox alignment="BASELINE_LEFT" layoutX="10.0" layoutY="274.0">
                                  <children>
-                                    <PasswordField fx:id="fxPasswordFieldBCWallet2Pass" prefHeight="22.0" prefWidth="240.0">
+                                    <PasswordField fx:id="fxPasswordFieldBCWallet2Pass" disable="true" prefHeight="22.0" prefWidth="260.0">
                                        <HBox.margin>
                                           <Insets bottom="4.0" right="10.0" />
                                        </HBox.margin>
                                     </PasswordField>
-                                    <Label text="Wallet Second Password">
+                                    <Label disable="true" text="Wallet Second Password">
                                        <HBox.margin>
                                           <Insets />
                                        </HBox.margin>

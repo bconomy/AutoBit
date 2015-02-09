@@ -17,8 +17,8 @@ package com.bconomy.autobit;
 
 import com.coinbase.api.Coinbase;
 import com.coinbase.api.CoinbaseBuilder;
-import com.coinbase.api.entity.Quote;
 import com.coinbase.api.entity.Transaction;
+import com.coinbase.api.entity.Transfer;
 import com.coinbase.api.exception.CoinbaseException;
 import info.blockchain.api.APIException;
 import info.blockchain.api.blockexplorer.BlockExplorer;
@@ -108,10 +108,17 @@ public class FXMLController implements Initializable {
 				return;
 			}
 			
+			//how often to topup Blockchain wallet
+			int topupFreq = 1440*60000; //one day
+			try {
+				topupFreq = Integer.parseInt(fxTextFieldTopupFreqMin.getText())*60000; //minutes
+			} catch (NumberFormatException ex) {
+				//ex.printStackTrace();
+			}
+			int day = (int)(System.currentTimeMillis()/topupFreq);
 			
 			System.out.println("******** Started");
 			int runs = 0;
-			int day = (int)(System.currentTimeMillis()/86400000);;
 			while (true) {
 				try {
 					if (stop) break;
@@ -122,14 +129,15 @@ public class FXMLController implements Initializable {
 //					long BCbalanceCurrent = BCaddress.getBalance();
 					long BCbalanceDiff = BCbalanceCurrent - BCbalanceLast;
 					BCbalanceLast = BCbalanceCurrent;
-					System.out.println(String.format("Blockchain BTC balance current[%s] diff[%s]", BCbalanceCurrent, BCbalanceDiff));
 					//TODO replace with blinking indicator
+					//System.out.println(String.format("Blockchain BTC balance current[%s] diff[%s]", BCbalanceCurrent, BCbalanceDiff));
 					
 					//long BCbalanceDiff = -3700000; //0.037 BTC //amount lost in BC wallet
 					
 					if (BCbalanceDiff < 0) { //sold bitcoin
 						BCbalanceDiff = -BCbalanceDiff;
-						System.out.println(String.format("Sold BTC [%s]", BCbalanceDiff));
+						
+						System.out.println(String.format("Sold BTC [%1$s] [%2$tF %2$tT]", BCbalanceDiff, new java.util.Date()));
 
 						Money CBspot = cb.getSpotPrice(CurrencyUnit.USD);
 						System.out.println(String.format("Coinbase spot price [%s]", CBspot));
@@ -165,42 +173,43 @@ public class FXMLController implements Initializable {
 							calcBuy = calcBuy.plus(calcBuyDiffBTC);
 						}
 
-						Quote CBquote = cb.getBuyQuote(calcBuy);
-						//Map<String, Money> fees = CBquote.getFees();
-						//System.out.println(String.format("Coinbase quote payout date [%s]", CBquote.getPayoutDate()));
-						System.out.println(String.format("Coinbase quote subtotal [%s]", CBquote.getSubtotal()));
-						System.out.println(String.format("Coinbase quote total [%s]", CBquote.getTotal()));
+//						Quote CBquote = cb.getBuyQuote(calcBuy);
+//						//Map<String, Money> fees = CBquote.getFees();
+//						//System.out.println(String.format("Coinbase quote payout date [%s]", CBquote.getPayoutDate()));
+//						System.out.println(String.format("Coinbase quote subtotal [%s]", CBquote.getSubtotal()));
+//						System.out.println(String.format("Coinbase quote total [%s]", CBquote.getTotal()));
 
 						//buy bitcoin
-//						Transfer CBbuy = cb.buy(calcBuy);
-//						System.out.println(String.format("Coinbase buy status [%s]", CBbuy.getStatus()));
-//						System.out.println(String.format("Coinbase buy id/code [%s]", CBbuy.getCode())); // "6H7GYLXZ"
-//						System.out.println(String.format("Coinbase buy payout date [%s]", CBbuy.getPayoutDate())); // "2013-02-01T18:00:00-0800"
-//						System.out.println(String.format("Coinbase buy subtotal [%s]", CBbuy.getSubtotal()));
-//						System.out.println(String.format("Coinbase buy total [%s]", CBbuy.getTotal())); // "USD 3"
+						Transfer CBbuy = cb.buy(calcBuy);
+						System.out.println(String.format("Coinbase buy status [%s]", CBbuy.getStatus()));
+						System.out.println(String.format("Coinbase buy id/code [%s]", CBbuy.getCode())); // "6H7GYLXZ"
+						System.out.println(String.format("Coinbase buy payout date [%s]", CBbuy.getPayoutDate())); // "2013-02-01T18:00:00-0800"
+						System.out.println(String.format("Coinbase buy subtotal [%s]", CBbuy.getSubtotal()));
+						System.out.println(String.format("Coinbase buy total [%s]", CBbuy.getTotal())); // "USD 3"
 
 						//send profit
 						Money profit = calcBuy.minus(VMBTCsold);
 						System.out.println(String.format("****BTC profit [%s]", profit));
 						
-//						Transaction CBsend = new Transaction();
-//						CBsend.setTo(ProfitWallet);
-//						CBsend.setAmount(profit);
-//						CBsend.setInstantBuy(true);
-//						CBsend.setUserFee(BTC_FEE.getAmount()); //TODO make this dynamic, if error add fee. coinbase says above 0.01 BTC they pay fee, so don't need to set
-//						//CBsend.setNotes(CBspot.toString());
-//						Transaction r = cb.sendMoney(CBsend);
-//						System.out.println(String.format("Coinbase send BTC profit status [%s]", r.getStatus()));
-//						System.out.println(String.format("Coinbase send BTC profit detailed status [%s]", r.getDetailedStatus()));
+						Transaction CBsend = new Transaction();
+						CBsend.setTo(ProfitWallet);
+						CBsend.setAmount(profit);
+						CBsend.setInstantBuy(true);
+						CBsend.setUserFee(BTC_FEE.getAmount()); //TODO make this dynamic, if error add fee. coinbase says above 0.01 BTC they pay fee, so don't need to set
+						//CBsend.setNotes(CBspot.toString());
+						Transaction r = cb.sendMoney(CBsend);
+						System.out.println(String.format("Coinbase send BTC profit status [%s]", r.getStatus()));
+						System.out.println(String.format("Coinbase send BTC profit detailed status [%s]", r.getDetailedStatus()));
 						
+						System.out.println("BTC rebuy: done.");
 					}
 					
 					
 					//check time, if day change then send bitcoin from Coinbase to Blockchain once a day to top up BTC
-					int now = (int)(System.currentTimeMillis()/86400000);
+					int now = (int)(System.currentTimeMillis()/topupFreq);
 					if (day != now) { //happens at midnight
 						day = now;
-						System.out.println(String.format("****Day change [%s]", now));
+						System.out.println(String.format("****Topup [%1$tF %1$tT]", new java.util.Date()));
 						
 						double USDMaxDaily = 300.0; //default
 						USDMaxDaily = Double.parseDouble(fxTextFieldUSDMaxDaily.getText());
@@ -230,6 +239,7 @@ public class FXMLController implements Initializable {
 							System.out.println(String.format("Coinbase send BTC status [%s]", r.getStatus()));
 							System.out.println(String.format("Coinbase send BTC detailed status [%s]", r.getDetailedStatus()));
 						}
+						System.out.println("topup: done.");
 						
 					}
 					
@@ -252,6 +262,7 @@ public class FXMLController implements Initializable {
 	@FXML private CheckBox fxCheckBoxAutostart;
 	@FXML private TextField fxTextFieldPercentMarkup;
 	@FXML private TextField fxTextFieldUSDMaxDaily;
+	@FXML private TextField fxTextFieldTopupFreqMin;
 	@FXML private TextField fxTextFieldProfitWallet;
 	@FXML private TextField fxTextFieldCBAcctId;
 	@FXML private TextField fxTextFieldCBAPIKey;
@@ -370,6 +381,7 @@ public class FXMLController implements Initializable {
 				.add("Autostart", fxCheckBoxAutostart.isSelected())
 				.add("PercentMarkup", Encryption.encrypt(fxTextFieldPercentMarkup.getText()))
 				.add("USDMaxDaily", Encryption.encrypt(fxTextFieldUSDMaxDaily.getText()))
+				.add("TopupFreqMin", Encryption.encrypt(fxTextFieldTopupFreqMin.getText()))
 				.add("ProfitWallet", Encryption.encrypt(fxTextFieldProfitWallet.getText()))
 				.add("CBAcctId", Encryption.encrypt(fxTextFieldCBAcctId.getText()))
 				.add("CBAPIKey", Encryption.encrypt(fxTextFieldCBAPIKey.getText()))
@@ -391,6 +403,7 @@ public class FXMLController implements Initializable {
 			if (model.containsKey("Autostart")) fxCheckBoxAutostart.setSelected(model.getBoolean("Autostart", false));
 			if (model.containsKey("PercentMarkup")) fxTextFieldPercentMarkup.setText(Encryption.decrypt(model.getString("PercentMarkup", "")));
 			if (model.containsKey("USDMaxDaily")) fxTextFieldUSDMaxDaily.setText(Encryption.decrypt(model.getString("USDMaxDaily", "")));
+			if (model.containsKey("TopupFreqMin")) fxTextFieldTopupFreqMin.setText(Encryption.decrypt(model.getString("TopupFreqMin", "")));
 			if (model.containsKey("ProfitWallet")) fxTextFieldProfitWallet.setText(Encryption.decrypt(model.getString("ProfitWallet", "")));
 			if (model.containsKey("CBAcctId")) fxTextFieldCBAcctId.setText(Encryption.decrypt(model.getString("CBAcctId", "")));
 			if (model.containsKey("CBAPIKey")) fxTextFieldCBAPIKey.setText(Encryption.decrypt(model.getString("CBAPIKey", "")));
