@@ -71,6 +71,7 @@ public class FXMLController implements Initializable {
 	public RunThread runThread;
 	public class RunThread extends Thread {
 		public Boolean stop = false;
+		public Boolean running = true;
 		@Override
 		public void run() {
 			String ProfitWallet = fxTextFieldProfitWallet.getText();
@@ -253,6 +254,7 @@ public class FXMLController implements Initializable {
 				runs++;
 			}
 			System.out.println("******** Stopped");
+			running = false;
 		}
 	}
 	
@@ -281,6 +283,7 @@ public class FXMLController implements Initializable {
 	}
 	@FXML
 	private void onButtonStart(ActionEvent event) {
+		if (runThread != null && runThread.running) return;
 		runThread = new RunThread();
 		runThread.start();
 	}
