@@ -59,13 +59,14 @@ public class FXMLController implements Initializable {
 	public static FXMLController instance;
 	
 	private static final long BC_BTC_SCALE = 100000000; //1 BTC
-	private static final Money BC_BTC_1 = Money.parse("BTC 1");
-	private static final Money BC_BTC_0 = Money.parse("BTC 0");
+	private static final Money BTC_1 = Money.parse("BTC 1");
+	private static final Money BTC_0 = Money.parse("BTC 0");
 	private static final Money BTC_FEE = Money.parse("BTC 0.0001");
+	private static final Money BTC_SIGNIFICANT = Money.parse("BTC 0.02");
 	private static final Money USD_BUY_ACC = Money.parse("USD 0.01");
 	
 	private static Money BCBTCtoMoney(long BCBTC) {
-		return BC_BTC_1.multipliedBy(BCBTC, RoundingMode.HALF_EVEN).dividedBy(BC_BTC_SCALE, RoundingMode.HALF_EVEN);
+		return BTC_1.multipliedBy(BCBTC, RoundingMode.HALF_EVEN).dividedBy(BC_BTC_SCALE, RoundingMode.HALF_EVEN);
 	}
 
 	public RunThread runThread;
@@ -160,7 +161,7 @@ public class FXMLController implements Initializable {
 						//figure out how much BTC VMUSDin will get me
 						Money calcBuy = VMBTCsold;
 						Money calcBuyDiff = Money.ofMajor(CurrencyUnit.USD, 0);
-						Money calcBuyDiffBTC = BC_BTC_0;
+						Money calcBuyDiffBTC = BTC_0;
 						for (int i=0; i < 20; i++) {
 							Money CBquotex = cb.getBuyQuote(calcBuy).getTotal();
 							calcBuyDiff = VMUSDin.minus(CBquotex);
@@ -169,7 +170,7 @@ public class FXMLController implements Initializable {
 
 							if (calcBuyDiff.abs().isLessThan(USD_BUY_ACC)) break;
 
-							calcBuyDiffBTC = BC_BTC_1.multipliedBy(calcBuyDiff.getAmount(), RoundingMode.HALF_EVEN).dividedBy(cb.getSpotPrice(CurrencyUnit.USD).getAmount(), RoundingMode.HALF_EVEN);
+							calcBuyDiffBTC = BTC_1.multipliedBy(calcBuyDiff.getAmount(), RoundingMode.HALF_EVEN).dividedBy(cb.getSpotPrice(CurrencyUnit.USD).getAmount(), RoundingMode.HALF_EVEN);
 
 							calcBuy = calcBuy.plus(calcBuyDiffBTC);
 						}
@@ -215,7 +216,7 @@ public class FXMLController implements Initializable {
 						double USDMaxDaily = 300.0; //default
 						USDMaxDaily = Double.parseDouble(fxTextFieldUSDMaxDaily.getText());
 						
-						Money topup = BC_BTC_1.multipliedBy(USDMaxDaily, RoundingMode.HALF_EVEN).dividedBy(cb.getSpotPrice(CurrencyUnit.USD).getAmount(), RoundingMode.HALF_EVEN);
+						Money topup = BTC_1.multipliedBy(USDMaxDaily, RoundingMode.HALF_EVEN).dividedBy(cb.getSpotPrice(CurrencyUnit.USD).getAmount(), RoundingMode.HALF_EVEN);
 						System.out.println(String.format("topup: how much BTC do we want [%s]", topup));
 						
 						Money BCbalance = BCBTCtoMoney(BCbalanceCurrent);
@@ -224,7 +225,7 @@ public class FXMLController implements Initializable {
 						topup = topup.minus(BCbalance);
 						System.out.println(String.format("topup: how much BTC do we need [%s]", topup));
 						
-						if (topup.isGreaterThan(BC_BTC_0)) { //only if positive
+						if (topup.isGreaterThan(BTC_SIGNIFICANT)) { //only if positive and significant
 							Money CBbalx = cb.getBalance().minus(BTC_FEE);
 							System.out.println(String.format("Coinbase BTC balance (minus fee) [%s]", CBbalx));
 							if (topup.isGreaterThan(CBbalx)) topup = CBbalx; //cant send somthing we dont have
@@ -245,7 +246,7 @@ public class FXMLController implements Initializable {
 					}
 					
 					//System.out.println("Thread Running " + runs);
-					Thread.sleep(2800+(int)(Math.random()*400)); //TODO maybe use secureRandom
+					Thread.sleep(4400+(int)(Math.random()*800)); //TODO maybe use secureRandom
 				} catch (InterruptedException ex) {
 					//ex.printStackTrace();
 				} catch (APIException | IOException | CoinbaseException ex) {
